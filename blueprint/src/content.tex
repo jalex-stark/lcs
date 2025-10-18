@@ -11,8 +11,8 @@ In this section, we introduce our main robust self-testing theorem for linear co
 Throughout, let $\text{LCS}(\mathbf{H}, l, \mathbb{Z}_d)$, $\mathbf{H} = (V,E,H)$ be an LCS game with solution group $\Gamma$.
 
 \begin{theorem}[Rigid self-testing of observables]\label{thm:rigid-self-testing-observables}
-\lean{RobustLCS.Exact.theorem41_exact}
-\uses{lem:unique-operator-solution, lemma:CLS}
+\lean{RobustLCS.Exact.Theorem4_1_exact_selftest}
+\uses{def:state-distance, def:density-matrix}
 Suppose $\Gamma$ is finite and all of its irreducible representations with $J\mapsto \omega_d I$ are equivalent to a fixed irrep $\sigma:\Gamma\to U(\mathbb{C}^d)$. Suppose $\{A_e^{(v)}\}, \{B_e\}, \rho\in \mathcal{L}(\mathcal{H}_A\otimes \mathcal{H}_B)$ is a perfect strategy presented via observables for the game.
 Then there are local isometries $V_A, V_B$ such that
 	\begin{itemize}

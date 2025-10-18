@@ -27,10 +27,12 @@ namespace RobustLCS.Isometry
 
 variable {n m : Type} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
 
-/-- A matrix `V : m×n` is an isometry (`Vᴴ V = I`). -/
-def Isometry (V : Matrix m n ℂ) : Prop := Vᴴ * V = (1 : Matrix n n ℂ)
+/-- A matrix `V : m×n` is an isometry, satisfying the condition `Vᴴ V = I`.
+This means V is a partial isometry embedding from ℂⁿ to ℂᵐ that preserves inner products. -/
+def IsometryProp (V : Matrix m n ℂ) : Prop := Vᴴ * V = (1 : Matrix n n ℂ)
 
-@[simp] lemma isometry_mul_left {V : Matrix m n ℂ} :
-    Isometry V ↔ Vᴴ * V = 1 := Iff.rfl
+omit [Fintype n] [DecidableEq m]
+@[simp] lemma isometryProp_iff {V : Matrix m n ℂ} :
+    IsometryProp V ↔ Vᴴ * V = 1 := Iff.rfl
 
 end RobustLCS.Isometry

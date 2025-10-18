@@ -1,9 +1,9 @@
+import Mathlib.Algebra.Algebra.Tower
 import Mathlib.Data.Complex.Basic
 import Mathlib.LinearAlgebra.Matrix.Trace
-import Mathlib.Algebra.Algebra.Tower
 import RobustLCS.Core.Density
-import RobustLCS.Core.MatrixFacts
 import RobustLCS.Core.Isometry
+import RobustLCS.Core.MatrixFacts
 import RobustLCS.Tactics.SimpTrace
 
 /-!
@@ -91,10 +91,21 @@ theorem Drho_left_unitary (ρd : Density n) {U X Y : M n}
   --   simp only [one_mul]  -- simplify I * (X-Y) = (X-Y)
   sorry
 
-/-- **(c)** Triangle inequality. -/
+/-- **(c)** Triangle inequality.
+**Proof strategy:** D_ρ is a seminorm induced by the bilinear form ⟪·,·⟫_ρ.
+Triangle inequality follows from Cauchy-Schwarz applied to Re Tr(ρ (X-Z)† (X-Z))
+with the quadratic form in Δ₁ = X-Y and Δ₂ = Y-Z. -/
 theorem Drho_triangle (ρd : Density n) (X Y Z : M n) :
-    Drho ρd X Z ≤ Drho ρd X Y + Drho ρd Y Z :=
-  MatrixFacts.seminorm_triangle_rho ρd X Y Z
+    Drho ρd X Z ≤ Drho ρd X Y + Drho ρd Y Z := by
+  -- PLAN: Recognize D_ρ as a seminorm from inner product ⟪·,·⟫_ρ.
+  --       Apply Cauchy-Schwarz to the quadratic form Q(t) = ⟪Δ₁ + t Δ₂, Δ₁ + t Δ₂⟫_ρ
+  --       where Δ₁ = X - Y, Δ₂ = Y - Z. For all real t, Q(t) ≥ 0 (PSD property).
+  --       The discriminant condition gives the Cauchy-Schwarz bound.
+  -- DEPENDS: Density.rhoInner definition, PSD property of ρd (psd_op),
+  --          Drho definition, seminorm_triangle_rho (helper in MatrixFacts)
+  -- TACTIC SKETCH:
+  --   exact MatrixFacts.seminorm_triangle_rho ρd X Y Z
+  exact MatrixFacts.seminorm_triangle_rho ρd X Y Z
 
 /-- **(d)** Left-multiplication bound for unitaries: `D_ρ( U₂ Z ∥ U₃ ) ≤ D_ρ( Z ∥ I ) + D_ρ( U₂ ∥ U₃ )`.
 **Proof strategy:** Apply triangle inequality: ‖U₂Z - U₃‖ ≤ ‖U₂Z - U₂‖ + ‖U₂ - U₃‖.
@@ -112,42 +123,78 @@ theorem Drho_left_mul_bound (ρd : Density n)
   --     _ = Drho ρd Z 1 + Drho ρd U₂ U₃  := by rw [Drho_left_unitary ρd h2]
   sorry
 
-/-- **(e)** Summed chain bound: `∥∏ A_i − ∏ B_i∥_ρ ≤ ∑ ∥A_i − B_i∥_ρ`. -/
+/-- **(e)** Summed chain bound: `∥∏ A_i − ∏ B_i∥_ρ ≤ ∑ ∥A_i − B_i∥_ρ`.
+**Proof strategy:** Telescoping product: ∏Aᵢ - ∏Bᵢ = ∑ᵢ (∏ⱼ<ᵢ Aⱼ)(Aᵢ - Bᵢ)(∏ⱼ>ᵢ Bⱼ).
+Each term is bounded by ‖Aᵢ - Bᵢ‖ρ via unitarity of left/right product factors. -/
 theorem Drho_chain_sum (ρd : Density n)
     (Xs Ys : List (M n)) (hlen : Xs.length = Ys.length) :
     Drho ρd (Xs.foldl (· * ·) 1) (Ys.foldl (· * ·) 1)
       ≤ (List.zipWith (fun X Y => Drho ρd X Y) Xs Ys).sum := by
-  -- Standard telescoping + triangle; induction on lists.
+  -- PLAN: Use telescoping: ∏Aᵢ - ∏Bᵢ = Σᵢ (∏ⱼ<ᵢ Aⱼ)(Aᵢ - Bᵢ)(∏ⱼ>ᵢ Bⱼ)
+  --       Each term contributes D_ρ(Aᵢ - Bᵢ) after bounding with unitarity.
+  --       Induction on list length with hlen constraint.
+  -- DEPENDS: Drho_triangle (part c), Drho_left_unitary (part b), List.foldl, List.zipWith
+  -- TACTIC SKETCH:
+  --   induction Xs, Ys using List.rec₂ with hlen constraint
+  --   base case: empty lists → 0 ≤ 0
+  --   inductive case: fold telescoping on head + induction hypothesis on tail
+  --   apply triangle inequality for each segment
   sorry
 
-/-- **(f)** Requires `W` unitary; the standard "push" inequality used in §4.2. -/
+/-- **(f)** Unitary push inequality used in §4.2 analysis.
+**Proof strategy:** BW - I = (B-I)W + (W-I). Apply triangle inequality and use (b), (d)
+to bound the left-multiplication term. -/
 theorem Drho_unitary_push (ρd : Density n) (ν η : ℝ)
     {W A B : M n} (hW : Wᴴ * W = 1)
     (h1 : Drho ρd W (1) ≤ ν)
     (h2 : Drho ρd (A * B) (1) ≤ η) :
     Drho ρd (B * W) (1) ≤ ν + 2 * η := by
-  -- Combine triangle + two applications of (b) and (d).
+  -- PLAN: Rewrite B*W - I as (B-I)*W + W - I. Apply triangle inequality.
+  --       The (B-I)*W term is bounded using left-unitary invariance (b) + chain sum (e).
+  --       Combine with bound on W - I from h1.
+  -- DEPENDS: Drho_triangle (c), Drho_left_unitary (b), Drho_chain_sum (e),
+  --          h1 (bound on W), h2 (bound on A*B)
+  -- TACTIC SKETCH:
+  --   calc Drho ρd (B * W) 1
+  --       ≤ Drho ρd (B * W) (A * B) + Drho ρd (A * B) 1  := Drho_triangle
+  --     _ ≤ ... + η  := by rw [h2]
+  --     _ ≤ ν + 2 * η  := by [use chain sum bounds with unitary W]
   sorry
 
-/-- **(g)** Convexity: `D_ρ( ∑ U_i ∥ I ) ≤ ∑ D_ρ(U_i ∥ I)`. -/
+/-- **(g)** Convexity: `D_ρ( ∑ U_i ∥ I ) ≤ ∑ D_ρ(U_i ∥ I)`.
+**Proof strategy:** D_ρ is a seminorm; the inequality is Minkowski for finite sums.
+∑ Uᵢ - I = ∑ (Uᵢ - I), so apply seminorm subadditivity. -/
 theorem Drho_convexity (ρd : Density n) {ι} [Fintype ι]
     (U : ι → M n) :
     Drho ρd (Finset.univ.sum (fun i => U i)) (1)
       ≤ Finset.univ.sum (fun i => Drho ρd (U i) (1)) := by
-  -- `‖·‖_ρ` is a seminorm → convex. Use Jensen or Minkowski on finite sums.
+  -- PLAN: D_ρ(·∥·) is a seminorm induced by ⟪·,·⟫_ρ (inner product).
+  --       Minkowski inequality for seminorms: D_ρ(∑ Aᵢ) ≤ ∑ D_ρ(Aᵢ).
+  --       Rewrite ∑ Uᵢ - I = ∑ (Uᵢ - I) and apply to difference vectors.
+  -- DEPENDS: Drho definition, rhoInner definition, seminorm properties (from MatrixFacts),
+  --          Finset.sum properties, PSD property of ⟪·,·⟫_ρ
+  -- TACTIC SKETCH:
+  --   unfold Drho rhoInner
+  --   simp only [sub_sum, ← Finset.sum_congr]
+  --   apply Finset.sum_le_sum
+  --   intro i hi
+  --   [use seminorm Minkowski inequality]
   sorry
 
 /-- **(h)** Tensor marginal specialization (dimension-normalized 2-norm case).
     We state it as a placeholder; implement partial trace equality in a follow-up. -/
 theorem Drho_tensor_I_eq_marginal
-    (ρAB : Density (n × n)) (A : M n) : True := by
-  -- Provide in a dedicated PartialTrace file if needed; not used immediately in Phase 1.
+    {m : Type} [Fintype m] [DecidableEq m] :
+    True := by
+  -- PLAN: Placeholder for partial trace identity. Full implementation requires partial trace
+  --       machinery (trace over subsystem) and will be developed in follow-up phase.
+  -- DEPENDS: (deferred) partial trace definition, density marginals
   trivial
 
 /-- **(i)** Isometry covariance: `D_ρ(Z₁ ∥ Z₂) = D_{VρV†}(V Z₁ V† ∥ V Z₂ V†)`. -/
 theorem Drho_isometry_covariant
     {m : Type} [Fintype m] [DecidableEq m]
-    (ρd : Density n) (V : Matrix m n ℂ) (hIso : Vᴴ * V = (1 : Matrix n n ℂ))
+    (ρd : Density n) (V : Matrix m n ℂ) (hIso : RobustLCS.Isometry.IsometryProp V)
     (Z₁ Z₂ : M n) :
     Drho ρd Z₁ Z₂
       = Drho
@@ -163,16 +210,41 @@ theorem Drho_isometry_covariant
               sorry
           }
           (V * Z₁ * Vᴴ) (V * Z₂ * Vᴴ) := by
-  -- Expand both sides and use U†U = I + cyclicity of trace.
+  -- PLAN: Isometry covariance. Expand definitions of D_ρ and ⟪·,·⟫_ρ for both sides.
+  --       Use (VZ V†-VW V†)† = VZ† V† - VW† V† = V(Z† - W†) V†.
+  --       Apply hIso (V†V = I) to cancel these in the trace inner product.
+  -- DEPENDS: Drho definition, rhoInner definition, Matrix.conjTranspose_mul, Matrix.mul_assoc,
+  --          trace_mul_cycle, hIso (IsometryProp V), Hermiticity of ρd
+  -- TACTIC SKETCH:
+  --   unfold Drho rhoInner
+  --   congr 1
+  --   rw [show V * (Z₁ - Z₂) * Vᴴ = V * Z₁ * Vᴴ - V * Z₂ * Vᴴ by ring]
+  --   rw [conjTranspose_mul, mul_assoc, mul_assoc, ← mul_assoc Zᴴ]
+  --   rw [← mul_assoc Wᴴ]
+  --   rw [hIso]  -- V†V = I
+  --   simp only [one_mul]
+  --   rw [trace_mul_cycle]
   sorry
 
 /-- **(j)** Projection support: if `P ρ = ρ` and `P` is a projection,
-    then `D_ρ(ZP ∥ I) = D_ρ(Z ∥ I) = D_ρ(Z ∥ P)`. -/
+    then `D_ρ(ZP ∥ I) = D_ρ(Z ∥ I) = D_ρ(Z ∥ P)`.
+**Proof strategy:** Use hSupp (P ρ = ρ) with projection property (P P = P) to simplify
+trace inner products. (ZP - I)† (ZP - I) simplifies via projection idempotence and support. -/
 theorem Drho_proj_support (ρd : Density n)
     {P Z : M n} (hProj : P * P = P) (hSupp : P * ρd.ρ = ρd.ρ) :
     Drho ρd (Z * P) (1) = Drho ρd Z (1)
     ∧ Drho ρd Z P = Drho ρd Z (1) := by
-  -- Two inclusions using hSupp and the definition of ⟪·,·⟫_ρ; routine.
+  -- PLAN: Two-part proof:
+  --   (1) Show D_ρ(Z P ∥ I) = D_ρ(Z ∥ I): Use (ZP - I)† = P Z† - I (projection idempotence).
+  --       Trace simplification via hSupp and hProj yields equality.
+  --   (2) Show D_ρ(Z ∥ P) = D_ρ(Z ∥ I): Use (Z - P)† = Z† - P (P is Hermitian projection).
+  --       Trace simplification via hSupp yields equivalence.
+  -- DEPENDS: Drho definition, rhoInner definition, hProj (P² = P), hSupp (Pρ = ρ),
+  --          Matrix.conjTranspose_sub, trace_mul_cycle, Hermiticity of projection P
+  -- TACTIC SKETCH:
+  --   constructor
+  --   · unfold Drho rhoInner; simp only [mul_sub, sub_mul]; rw [show P*Zᴴ = Zᴴ by ...]; ring
+  --   · unfold Drho rhoInner; simp only [sub_mul]; rw [show Zᴴ*P - P = ... by ...]; ring
   sorry
 
 end Density

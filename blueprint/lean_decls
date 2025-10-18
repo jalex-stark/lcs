@@ -9,4 +9,4 @@ RobustLCS.Density.Drho_sq_formula
 RobustLCS.Density.Drho_tensor_I_eq_marginal
 RobustLCS.Density.Drho_triangle
 RobustLCS.Density.Drho_unitary_push
-RobustLCS.Exact.theorem41_exact
+RobustLCS.Exact.Theorem4_1_exact_selftest
