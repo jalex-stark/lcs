@@ -12,3 +12,5 @@ import RobustLCS.Core.StateDistance
 
 -- Exact self-testing framework (Phase 1)
 import RobustLCS.Exact.ExactSelfTest
+import RobustLCS.Exact.PartialTrace
+import RobustLCS.Exact.Support
