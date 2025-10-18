@@ -36,6 +36,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-lake-
 
+      - name: Get Mathlib cache
+        run: lake exe cache get || true
+
       - name: Build Lean project
         run: lake build
 
