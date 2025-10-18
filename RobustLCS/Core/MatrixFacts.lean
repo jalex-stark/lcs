@@ -3,6 +3,24 @@ import Mathlib.Data.Complex.Basic
 import RobustLCS.Core.Density
 import RobustLCS.Tactics.SimpTrace
 
+/-!
+# Matrix Helper Lemmas
+
+This file contains auxiliary lemmas about matrix operations (trace cyclicity, PSD properties)
+used throughout the robust self-testing formalization.
+
+## Main results
+
+* `trace_mul_cycle3`: Three-factor trace cyclicity
+* `seminorm_triangle_rho`: Triangle inequality for the ρ-weighted seminorm
+
+## Implementation notes
+
+These lemmas support the proofs in StateDistance.lean, particularly for establishing
+that D_ρ(·∥·) satisfies the axioms of a semimetric.
+
+-/
+
 open Matrix Complex RobustLCS.Tactics
 
 namespace RobustLCS.MatrixFacts

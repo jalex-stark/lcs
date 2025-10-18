@@ -58,7 +58,7 @@
 <h1 id="thm:rigid-self-testing-observables"> Exact self-testing</h1>
 
 <p>Throughout, let \(\text{LCS}(\mathbf{H}, l, \mathbb {Z}_d)\), \(\mathbf{H} = (V,E,H)\) be an LCS game with solution group \(\Gamma \). </p>
-<p>[Rigid self-testing of observables] RobustLCS.Exact.ExactSelfTest.rigidSelfTest lem:unique-operator-solution, lemma:CLS Suppose \(\Gamma \) is finite and all of its irreducible representations with \(J\mapsto \omega _d I\) are equivalent to a fixed irrep \(\sigma :\Gamma \to U(\mathbb {C}^d)\). Suppose \(\{ A_e^{(v)}\} , \{ B_e\} , \rho \in \mathcal{L}(\mathcal{H}_A\otimes \mathcal{H}_B)\) is a perfect strategy presented via observables for the game. Then there are local isometries \(V_A, V_B\) such that </p>
+<p>[Rigid self-testing of observables] RobustLCS.Exact.theorem41_exact lem:unique-operator-solution, lemma:CLS Suppose \(\Gamma \) is finite and all of its irreducible representations with \(J\mapsto \omega _d I\) are equivalent to a fixed irrep \(\sigma :\Gamma \to U(\mathbb {C}^d)\). Suppose \(\{ A_e^{(v)}\} , \{ B_e\} , \rho \in \mathcal{L}(\mathcal{H}_A\otimes \mathcal{H}_B)\) is a perfect strategy presented via observables for the game. Then there are local isometries \(V_A, V_B\) such that </p>
 <ul class="itemize">
   <li><p>for all \(e,v\), \(V_AA_e^{(v)}V_A^\dagger = \sigma (e)\otimes I \oplus \hat{A}^{(v)}_e\), where \(\hat{A}^{(v)}_e V_A\rho V_A^\dagger = 0\), and </p>
 </li>
@@ -69,7 +69,7 @@
 <h1 id="def:state-distance"> State-dependent distance</h1>
 
 <p>We now begin to collect the necessary tools to generalize the previous section to the approximate case. To start, we need a convenient calculus for manipulating our notion of state-dependent distance. </p>
-<p>[State-dependent distance] RobustLCS.Core.Density.Drho def:density-matrix For a density matrix \(\rho \) and operators \(X, Y\), we define </p>
+<p>[State-dependent distance] RobustLCS.Density.Drho def:density-matrix For a density matrix \(\rho \) and operators \(X, Y\), we define </p>
 <div class="equation" id="lemma:state-dependent-distance">
 <p>
   <div class="equation_content">
@@ -79,29 +79,29 @@
 </p>
 </div>
 
-<p>[Density matrix] RobustLCS.Core.Density.Density A density matrix \(\rho \) on \(\mathcal{H}\) is a positive semidefinite Hermitian operator with trace 1.  </p>
+<p>[Density matrix] RobustLCS.Density.Density A density matrix \(\rho \) on \(\mathcal{H}\) is a positive semidefinite Hermitian operator with trace 1.  </p>
 <p>Much like the fidelity of quantum states, the squared distance \(D_\rho (\cdot \|  \cdot )^2\) is often more natural than the distance. We collect computationally useful properties of \(D_\rho \) in the following lemma. </p>
-<p>[State-dependent distance properties] RobustLCS.Core.StateDistance def:state-distance, def:density-matrix Let \(\mathcal{H} = \mathcal{H}_A\otimes \mathcal{H}_B\) be a Hilbert space. Let \(U,U_i\) be unitary operators on \(\mathcal{H}\). Let \(Z,Z_i\) be arbitrary operators on \(\mathcal{H}\). Similarly, let \(A_i, B_i\) be unitary operators on \(\mathcal{H}_A, \mathcal{H}_B\) respectively. Let \(X_i, Y_i\) be arbitrary operators on \(\mathcal{H}_A, \mathcal{H}_B\), respectively. Let \(\rho \) be a state on \(\mathcal{H}_A\otimes \mathcal{H}_B\). Let \(V: \mathcal{H}\to \mathcal{H}'\) be an isometry and \(U'\) a unitary operator on \(\mathcal{H}'\). Then </p>
+<p>[State-dependent distance properties] def:state-distance, def:density-matrix Let \(\mathcal{H} = \mathcal{H}_A\otimes \mathcal{H}_B\) be a Hilbert space. Let \(U,U_i\) be unitary operators on \(\mathcal{H}\). Let \(Z,Z_i\) be arbitrary operators on \(\mathcal{H}\). Similarly, let \(A_i, B_i\) be unitary operators on \(\mathcal{H}_A, \mathcal{H}_B\) respectively. Let \(X_i, Y_i\) be arbitrary operators on \(\mathcal{H}_A, \mathcal{H}_B\), respectively. Let \(\rho \) be a state on \(\mathcal{H}_A\otimes \mathcal{H}_B\). Let \(V: \mathcal{H}\to \mathcal{H}'\) be an isometry and \(U'\) a unitary operator on \(\mathcal{H}'\). Then </p>
 <ol class="enumerate">
-  <li><p> RobustLCS.Core.StateDistance.Drho_sq_formula \(D_\rho (U \|  I)^2 =2 - 2\mathrm{Re}\, \mathrm{Tr}_\rho U\). More generally, \(D_\rho (Z \|  I)^2 = 1 + \mathrm{Tr}_\rho Z^\dagger Z - 2\mathrm{Re}\, \mathrm{Tr}_\rho Z\). </p>
+  <li><p> RobustLCS.Density.Drho_sq_formula \(D_\rho (U \|  I)^2 =2 - 2\mathrm{Re}\, \mathrm{Tr}_\rho U\). More generally, \(D_\rho (Z \|  I)^2 = 1 + \mathrm{Tr}_\rho Z^\dagger Z - 2\mathrm{Re}\, \mathrm{Tr}_\rho Z\). </p>
 </li>
-  <li><p> RobustLCS.Core.StateDistance.Drho_left_unitary \(D_\rho (UX \|  UY) = D_\rho (X \|  Y)\) for unitary \(U\). (Left-unitary invariance) </p>
+  <li><p> RobustLCS.Density.Drho_left_unitary \(D_\rho (UX \|  UY) = D_\rho (X \|  Y)\) for unitary \(U\). (Left-unitary invariance) </p>
 </li>
-  <li><p> RobustLCS.Core.StateDistance.Drho_triangle \(D_\rho (Z_1 \|  Z_3) \leq D_\rho (Z_1 \|  Z_2) + D_\rho (Z_2 \|  Z_3)\). (Triangle inequality) </p>
+  <li><p> RobustLCS.Density.Drho_triangle \(D_\rho (Z_1 \|  Z_3) \leq D_\rho (Z_1 \|  Z_2) + D_\rho (Z_2 \|  Z_3)\). (Triangle inequality) </p>
 </li>
-  <li><p> RobustLCS.Core.StateDistance.Drho_left_mul_bound \(D_\rho (ZU_2 \|  U_3) \leq D_\rho (Z \|  I) + D_\rho (U_2 \|  U_3)\) for unitaries \(U_2, U_3\). </p>
+  <li><p> RobustLCS.Density.Drho_left_mul_bound \(D_\rho (ZU_2 \|  U_3) \leq D_\rho (Z \|  I) + D_\rho (U_2 \|  U_3)\) for unitaries \(U_2, U_3\). </p>
 </li>
-  <li><p> RobustLCS.Core.StateDistance.Drho_chain_sum \(D_\rho (\prod _{i}A_i\otimes I_B \|  \prod _{i}I_A \otimes B_i) \leq \sum _i D_\rho (A_i\otimes I_B \|  I_A\otimes B_i)\). (Chain sum bound) </p>
+  <li><p> RobustLCS.Density.Drho_chain_sum \(D_\rho (\prod _{i}A_i\otimes I_B \|  \prod _{i}I_A \otimes B_i) \leq \sum _i D_\rho (A_i\otimes I_B \|  I_A\otimes B_i)\). (Chain sum bound) </p>
 </li>
-  <li><p> RobustLCS.Core.StateDistance.Drho_unitary_push If \(D_\rho (I_A\otimes WB \|  I) \leq \nu \) and \(D_\rho (A\otimes B \|  I)\leq \eta \), then \(D_\rho (I_A\otimes BW \|  I)\leq \nu + 2\eta \) for unitary \(W\). (Unitary push) </p>
+  <li><p> RobustLCS.Density.Drho_unitary_push If \(D_\rho (I_A\otimes WB \|  I) \leq \nu \) and \(D_\rho (A\otimes B \|  I)\leq \eta \), then \(D_\rho (I_A\otimes BW \|  I)\leq \nu + 2\eta \) for unitary \(W\). (Unitary push) </p>
 </li>
-  <li><p> RobustLCS.Core.StateDistance.Drho_convexity \(D_\rho (\mathbb {E}_i U_i \|  I) \leq \mathbb {E}_i D_\rho (U_i \|  I)\). (Convexity) </p>
+  <li><p> RobustLCS.Density.Drho_convexity \(D_\rho (\mathbb {E}_i U_i \|  I) \leq \mathbb {E}_i D_\rho (U_i \|  I)\). (Convexity) </p>
 </li>
-  <li><p> RobustLCS.Core.StateDistance.Drho_tensor_I_eq_marginal \(D_\rho (A\otimes I_B \|  I_{AB}) = D_{\rho _A}(A \|  I_A)\), where \(\rho _A = \mathrm{Tr}_B \rho \). (Partial trace) </p>
+  <li><p> RobustLCS.Density.Drho_tensor_I_eq_marginal \(D_\rho (A\otimes I_B \|  I_{AB}) = D_{\rho _A}(A \|  I_A)\), where \(\rho _A = \mathrm{Tr}_B \rho \). (Partial trace) </p>
 </li>
-  <li><p> RobustLCS.Core.StateDistance.Drho_isometry_covariant \(D_\rho (Z_1 \|  Z_2) = D_{V\rho V^\dagger }(VZ_1V^\dagger \|  VZ_2V^\dagger )\) for isometry \(V\). (Isometry covariance) </p>
+  <li><p> RobustLCS.Density.Drho_isometry_covariant \(D_\rho (Z_1 \|  Z_2) = D_{V\rho V^\dagger }(VZ_1V^\dagger \|  VZ_2V^\dagger )\) for isometry \(V\). (Isometry covariance) </p>
 </li>
-  <li><p> RobustLCS.Core.StateDistance.Drho_proj_support If \(P\) is a projection such that \(P\rho = \rho \), then \(D_\rho (XP \|  I) = D_\rho (X \|  I) = D_\rho (X \|  P)\). (Projection support) </p>
+  <li><p> RobustLCS.Density.Drho_proj_support If \(P\) is a projection such that \(P\rho = \rho \), then \(D_\rho (XP \|  I) = D_\rho (X \|  I) = D_\rho (X \|  P)\). (Projection support) </p>
 </li>
 </ol>
 
