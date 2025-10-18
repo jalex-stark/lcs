@@ -3,6 +3,22 @@ import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.Data.Matrix.Basic
 import Mathlib.Data.Real.Sqrt
 
+/-!
+# Density Matrices
+
+This file defines density matrices as finite-dimensional Hermitian, positive semidefinite,
+trace-1 operators on ℂⁿ. Used as quantum states in the robust self-testing framework.
+
+## Main definitions
+
+* `DensityMatrix n`: Structure representing n×n density matrices
+* Properties: Hermitian, PSD (∀ v, 0 ≤ Re(v† ρ v)), Trace = 1
+
+## References
+
+See Section 4 of "Robust self-testing for linear constraint system games" (arXiv:1709.09267v2)
+-/
+
 open Matrix Complex
 
 namespace RobustLCS

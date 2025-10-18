@@ -1,7 +1,95 @@
-% In this file you should put the actual content of the blueprint.
-% It will be used both by the web and the print version.
-% It should *not* include the \begin{document}
-%
-% If you want to split the blueprint content into several files then
-% the current file can be a simple sequence of \input. Otherwise It
-% can start with a \section or \chapter for instance.
+% Blueprint content for Robust LCS Self-Testing
+% This file contains the mathematical content linked to the Lean 4 formalization
+
+\chapter{General self-testing}\label{sec:self-testing}
+
+In this section, we introduce our main robust self-testing theorem for linear constraint system games with solution groups of a certain form. We start by stating and proving an exact version of the theorem, then introduce the necessary tools to prove an approximate version.
+
+\section{Exact self-testing}
+\label{subsection:exact-self-testing}
+
+Throughout, let $\text{LCS}(\mathbf{H}, l, \mathbb{Z}_d)$, $\mathbf{H} = (V,E,H)$ be an LCS game with solution group $\Gamma$.
+
+\begin{theorem}[Rigid self-testing of observables]\label{thm:rigid-self-testing-observables}
+\lean{RobustLCS.Exact.ExactSelfTest.rigidSelfTest}
+\uses{lem:unique-operator-solution, lemma:CLS}
+Suppose $\Gamma$ is finite and all of its irreducible representations with $J\mapsto \omega_d I$ are equivalent to a fixed irrep $\sigma:\Gamma\to U(\mathbb{C}^d)$. Suppose $\{A_e^{(v)}\}, \{B_e\}, \rho\in \mathcal{L}(\mathcal{H}_A\otimes \mathcal{H}_B)$ is a perfect strategy presented via observables for the game.
+Then there are local isometries $V_A, V_B$ such that
+	\begin{itemize}
+		\item for all $e,v$, $V_AA_e^{(v)}V_A^\dagger = \sigma(e)\otimes I \oplus \hat{A}^{(v)}_e$, where $\hat{A}^{(v)}_e V_A\rho V_A^\dagger = 0$, and
+		\item for all $e$ $V_BB_eV_B^\dagger =\bar{\sigma(e)}\otimes I \oplus \hat{B}_e$, where $\hat{B}_e V_B\rho V_B^\dagger = 0$.
+	\end{itemize}
+\end{theorem}
+
+\section{State-dependent distance}\label{subsection:state-dependent-distance}
+
+We now begin to collect the necessary tools to generalize the previous section to the approximate case. To start, we need a convenient calculus for manipulating our notion of state-dependent distance.
+
+\begin{definition}[State-dependent distance]\label{def:state-distance}
+\lean{RobustLCS.Core.Density.Drho}
+\uses{def:density-matrix}
+For a density matrix $\rho$ and operators $X, Y$, we define
+\begin{equation}
+D_\rho(X \| Y) = \sqrt{\mathrm{Tr}_\rho(X-Y)^\dagger(X-Y)}
+\end{equation}
+\end{definition}
+
+\begin{definition}[Density matrix]\label{def:density-matrix}
+\lean{RobustLCS.Core.Density.Density}
+A density matrix $\rho$ on $\mathcal{H}$ is a positive semidefinite Hermitian operator with trace 1.
+\end{definition}
+
+Much like the fidelity of quantum states, the squared distance $D_\rho(\cdot \| \cdot)^2$ is often more natural than the distance. We collect computationally useful properties of $D_\rho$ in the following lemma.
+
+\begin{lemma}[State-dependent distance properties]\label{lemma:state-dependent-distance}
+\lean{RobustLCS.Core.StateDistance}
+\uses{def:state-distance, def:density-matrix}
+	Let $\mathcal{H} = \mathcal{H}_A\otimes \mathcal{H}_B$ be a Hilbert space. Let $U,U_i$ be unitary operators on $\mathcal{H}$. Let $Z,Z_i$ be arbitrary operators on $\mathcal{H}$. Similarly, let $A_i, B_i$ be unitary operators on $\mathcal{H}_A, \mathcal{H}_B$ respectively. Let $X_i, Y_i$ be arbitrary operators on $\mathcal{H}_A, \mathcal{H}_B$, respectively.
+	Let $\rho$ be a state on $\mathcal{H}_A\otimes \mathcal{H}_B$. Let $V: \mathcal{H}\to \mathcal{H}'$ be an isometry and $U'$ a unitary operator on $\mathcal{H}'$. Then
+	\begin{enumerate}[(a)]
+		\item
+		\label{item:state-dependent-distance-square}
+		\lean{RobustLCS.Core.StateDistance.Drho_sq_formula}
+		$D_\rho(U \| I)^2 =2 - 2\mathrm{Re}\,\mathrm{Tr}_\rho U$. More generally, $D_\rho(Z \| I)^2 = 1 + \mathrm{Tr}_\rho Z^\dagger Z - 2\mathrm{Re}\,\mathrm{Tr}_\rho Z$.
+		\item
+		\label{item:state-dependent-distance-inverse}
+		\lean{RobustLCS.Core.StateDistance.Drho_left_unitary}
+		$D_\rho(UX \| UY) = D_\rho(X \| Y)$ for unitary $U$. (Left-unitary invariance)
+		\item\label{item:state-dependent-distance-triangle}
+		\lean{RobustLCS.Core.StateDistance.Drho_triangle}
+		% \leanok
+		$D_\rho(Z_1 \| Z_3) \leq D_\rho(Z_1 \| Z_2) + D_\rho(Z_2 \| Z_3)$. (Triangle inequality)
+		\item\label{item:state-dependent-distance-right-multiplication}
+		\lean{RobustLCS.Core.StateDistance.Drho_left_mul_bound}
+		$D_\rho(ZU_2 \| U_3) \leq D_\rho(Z \| I) + D_\rho(U_2 \| U_3)$ for unitaries $U_2, U_3$.
+		\item\label{item:state-dependent-distance-chaining}
+		\lean{RobustLCS.Core.StateDistance.Drho_chain_sum}
+		$D_\rho(\prod_{i}A_i\otimes I_B \| \prod_{i}I_A \otimes B_i) \leq \sum_i D_\rho(A_i\otimes I_B \| I_A\otimes B_i)$. (Chain sum bound)
+		\item\label{item:state-dependent-distance-conjugation}
+		\lean{RobustLCS.Core.StateDistance.Drho_unitary_push}
+		If $D_\rho(I_A\otimes WB \| I) \leq \nu$ and $D_\rho(A\otimes B \| I)\leq \eta$, then $D_\rho(I_A\otimes BW \| I)\leq \nu + 2\eta$ for unitary $W$. (Unitary push)
+		\item\label{item:state-dependent-distance-jensen}
+		\lean{RobustLCS.Core.StateDistance.Drho_convexity}
+		$D_\rho(\mathbb{E}_i U_i \| I) \leq \mathbb{E}_i D_\rho(U_i \| I)$. (Convexity)
+		\item \label{item:state-dependent-distance-partial-trace}
+		\lean{RobustLCS.Core.StateDistance.Drho_tensor_I_eq_marginal}
+		$D_\rho(A\otimes I_B \| I_{AB}) = D_{\rho_A}(A \| I_A)$, where $\rho_A = \mathrm{Tr}_B \rho$. (Partial trace)
+		\item \label{item:state-dependent-distance-isometry}
+		\lean{RobustLCS.Core.StateDistance.Drho_isometry_covariant}
+		$D_\rho(Z_1 \| Z_2) = D_{V\rho V^\dagger}(VZ_1V^\dagger \| VZ_2V^\dagger)$ for isometry $V$. (Isometry covariance)
+		\item\label{item:state-dependent-distance-projection-is-identity}
+		\lean{RobustLCS.Core.StateDistance.Drho_proj_support}
+		If $P$ is a projection such that $P\rho = \rho$, then $D_\rho(XP \| I) = D_\rho(X \| I) = D_\rho(X \| P)$. (Projection support)
+	\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+\uses{lemma:state-dependent-distance}
+The proofs are routine matrix calculations using the definition of $D_\rho$ and basic properties of the trace. See the Lean formalization for complete details.
+\end{proof}
+
+We'll use properties (f) and (d) to convert proofs of group relations into proofs of approximate relations between operators which try to represent the group.
+
+\section{Robust self-testing (future work)}
+
+The remainder of the self-testing machinery---including the stability lemma, quantitative van Kampen, and the main robust self-testing theorem---will be formalized in later phases of this project.

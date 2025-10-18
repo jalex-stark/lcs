@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+  MathJax = { 
+    tex: {
+		    inlineMath: [['$','$'], ['\\(','\\)']]
+	} }
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+<meta name="generator" content="plasTeX" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>General self-testing</title>
+<link rel="prev" href="index.html" title="Robust LCS Self-Testing" />
+<link rel="up" href="index.html" title="Robust LCS Self-Testing" />
+<link rel="stylesheet" href="styles/theme-white.css" />
+<link rel="stylesheet" href="styles/extra_styles.css" />
+</head>
+
+<body>
+<header>
+<svg  id="toc-toggle" class="icon icon-list-numbered "><use xlink:href="symbol-defs.svg#icon-list-numbered"></use></svg>
+<h1 id="doc_title"><a href="index.html">Robust LCS Self-Testing</a></h1>
+</header>
+
+<div class="wrapper">
+<nav class="toc">
+<ul class="sub-toc-0">
+<li class=" active current">
+  <a href="sec-self-testing.html"><span class="toc_ref"></span> <span class="toc_entry">General self-testing</span></a>
+  <span class="expand-toc">▼</span>
+  <ul class="sub-toc-1 active">
+     <li class="">
+  <a href="sec-self-testing.html#thm:rigid-self-testing-observables"><span class="toc_ref"></span> <span class="toc_entry">Exact self-testing</span></a>
+ </li>
+<li class="">
+  <a href="sec-self-testing.html#def:state-distance"><span class="toc_ref"></span> <span class="toc_entry">State-dependent distance</span></a>
+ </li>
+<li class="">
+  <a href="sec-self-testing.html#a0000000004"><span class="toc_ref"></span> <span class="toc_entry">Robust self-testing (future work)</span></a>
+ </li>
+
+  </ul>
+ </li>
+</ul>
+</nav>
+
+<div class="content">
+<div class="content-wrapper">
+
+
+<div class="main-text">
+<h1 id="sec:self-testing"> General self-testing</h1>
+
+<p>In this section, we introduce our main robust self-testing theorem for linear constraint system games with solution groups of a certain form. We start by stating and proving an exact version of the theorem, then introduce the necessary tools to prove an approximate version. </p>
+<h1 id="thm:rigid-self-testing-observables"> Exact self-testing</h1>
+
+<p>Throughout, let \(\text{LCS}(\mathbf{H}, l, \mathbb {Z}_d)\), \(\mathbf{H} = (V,E,H)\) be an LCS game with solution group \(\Gamma \). </p>
+<p>[Rigid self-testing of observables] RobustLCS.Exact.ExactSelfTest.rigidSelfTest lem:unique-operator-solution, lemma:CLS Suppose \(\Gamma \) is finite and all of its irreducible representations with \(J\mapsto \omega _d I\) are equivalent to a fixed irrep \(\sigma :\Gamma \to U(\mathbb {C}^d)\). Suppose \(\{ A_e^{(v)}\} , \{ B_e\} , \rho \in \mathcal{L}(\mathcal{H}_A\otimes \mathcal{H}_B)\) is a perfect strategy presented via observables for the game. Then there are local isometries \(V_A, V_B\) such that </p>
+<ul class="itemize">
+  <li><p>for all \(e,v\), \(V_AA_e^{(v)}V_A^\dagger = \sigma (e)\otimes I \oplus \hat{A}^{(v)}_e\), where \(\hat{A}^{(v)}_e V_A\rho V_A^\dagger = 0\), and </p>
+</li>
+  <li><p>for all \(e\) \(V_BB_eV_B^\dagger =\bar{\sigma (e)}\otimes I \oplus \hat{B}_e\), where \(\hat{B}_e V_B\rho V_B^\dagger = 0\). </p>
+</li>
+</ul>
+
+<h1 id="def:state-distance"> State-dependent distance</h1>
+
+<p>We now begin to collect the necessary tools to generalize the previous section to the approximate case. To start, we need a convenient calculus for manipulating our notion of state-dependent distance. </p>
+<p>[State-dependent distance] RobustLCS.Core.Density.Drho def:density-matrix For a density matrix \(\rho \) and operators \(X, Y\), we define </p>
+<div class="equation" id="lemma:state-dependent-distance">
+<p>
+  <div class="equation_content">
+    \begin{equation}  D_\rho (X \|  Y) = \sqrt{\mathrm{Tr}_\rho (X-Y)^\dagger (X-Y)} \end{equation}
+  </div>
+  <span class="equation_label"></span>
+</p>
+</div>
+
+<p>[Density matrix] RobustLCS.Core.Density.Density A density matrix \(\rho \) on \(\mathcal{H}\) is a positive semidefinite Hermitian operator with trace 1.  </p>
+<p>Much like the fidelity of quantum states, the squared distance \(D_\rho (\cdot \|  \cdot )^2\) is often more natural than the distance. We collect computationally useful properties of \(D_\rho \) in the following lemma. </p>
+<p>[State-dependent distance properties] RobustLCS.Core.StateDistance def:state-distance, def:density-matrix Let \(\mathcal{H} = \mathcal{H}_A\otimes \mathcal{H}_B\) be a Hilbert space. Let \(U,U_i\) be unitary operators on \(\mathcal{H}\). Let \(Z,Z_i\) be arbitrary operators on \(\mathcal{H}\). Similarly, let \(A_i, B_i\) be unitary operators on \(\mathcal{H}_A, \mathcal{H}_B\) respectively. Let \(X_i, Y_i\) be arbitrary operators on \(\mathcal{H}_A, \mathcal{H}_B\), respectively. Let \(\rho \) be a state on \(\mathcal{H}_A\otimes \mathcal{H}_B\). Let \(V: \mathcal{H}\to \mathcal{H}'\) be an isometry and \(U'\) a unitary operator on \(\mathcal{H}'\). Then </p>
+<ol class="enumerate">
+  <li><p> RobustLCS.Core.StateDistance.Drho_sq_formula \(D_\rho (U \|  I)^2 =2 - 2\mathrm{Re}\, \mathrm{Tr}_\rho U\). More generally, \(D_\rho (Z \|  I)^2 = 1 + \mathrm{Tr}_\rho Z^\dagger Z - 2\mathrm{Re}\, \mathrm{Tr}_\rho Z\). </p>
+</li>
+  <li><p> RobustLCS.Core.StateDistance.Drho_left_unitary \(D_\rho (UX \|  UY) = D_\rho (X \|  Y)\) for unitary \(U\). (Left-unitary invariance) </p>
+</li>
+  <li><p> RobustLCS.Core.StateDistance.Drho_triangle \(D_\rho (Z_1 \|  Z_3) \leq D_\rho (Z_1 \|  Z_2) + D_\rho (Z_2 \|  Z_3)\). (Triangle inequality) </p>
+</li>
+  <li><p> RobustLCS.Core.StateDistance.Drho_left_mul_bound \(D_\rho (ZU_2 \|  U_3) \leq D_\rho (Z \|  I) + D_\rho (U_2 \|  U_3)\) for unitaries \(U_2, U_3\). </p>
+</li>
+  <li><p> RobustLCS.Core.StateDistance.Drho_chain_sum \(D_\rho (\prod _{i}A_i\otimes I_B \|  \prod _{i}I_A \otimes B_i) \leq \sum _i D_\rho (A_i\otimes I_B \|  I_A\otimes B_i)\). (Chain sum bound) </p>
+</li>
+  <li><p> RobustLCS.Core.StateDistance.Drho_unitary_push If \(D_\rho (I_A\otimes WB \|  I) \leq \nu \) and \(D_\rho (A\otimes B \|  I)\leq \eta \), then \(D_\rho (I_A\otimes BW \|  I)\leq \nu + 2\eta \) for unitary \(W\). (Unitary push) </p>
+</li>
+  <li><p> RobustLCS.Core.StateDistance.Drho_convexity \(D_\rho (\mathbb {E}_i U_i \|  I) \leq \mathbb {E}_i D_\rho (U_i \|  I)\). (Convexity) </p>
+</li>
+  <li><p> RobustLCS.Core.StateDistance.Drho_tensor_I_eq_marginal \(D_\rho (A\otimes I_B \|  I_{AB}) = D_{\rho _A}(A \|  I_A)\), where \(\rho _A = \mathrm{Tr}_B \rho \). (Partial trace) </p>
+</li>
+  <li><p> RobustLCS.Core.StateDistance.Drho_isometry_covariant \(D_\rho (Z_1 \|  Z_2) = D_{V\rho V^\dagger }(VZ_1V^\dagger \|  VZ_2V^\dagger )\) for isometry \(V\). (Isometry covariance) </p>
+</li>
+  <li><p> RobustLCS.Core.StateDistance.Drho_proj_support If \(P\) is a projection such that \(P\rho = \rho \), then \(D_\rho (XP \|  I) = D_\rho (X \|  I) = D_\rho (X \|  P)\). (Projection support) </p>
+</li>
+</ol>
+
+<p><div class="proof_wrapper" id="a0000000002">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  
+  </div>
+</div> lemma:state-dependent-distance The proofs are routine matrix calculations using the definition of \(D_\rho \) and basic properties of the trace. See the Lean formalization for complete details. <div class="proof_wrapper" id="a0000000003">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  
+  </div>
+</div> </p>
+<p>We’ll use properties (f) and (d) to convert proofs of group relations into proofs of approximate relations between operators which try to represent the group. </p>
+<h1 id="a0000000004"> Robust self-testing (future work)</h1>
+<p>The remainder of the self-testing machinery—including the stability lemma, quantitative van Kampen, and the main robust self-testing theorem—will be formalized in later phases of this project.  </p>
+
+</div> <!--main-text -->
+</div> <!-- content-wrapper -->
+</div> <!-- content -->
+</div> <!-- wrapper -->
+
+<nav class="prev_up_next">
+  <a href="index.html" title="Robust LCS Self-Testing"><svg  class="icon icon-arrow-left "><use xlink:href="symbol-defs.svg#icon-arrow-left"></use></svg>
+</a>
+  <a href="index.html" title="Robust LCS Self-Testing"><svg  class="icon icon-arrow-up "><use xlink:href="symbol-defs.svg#icon-arrow-up"></use></svg>
+</a>
+</nav>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/plastex.js"></script>
+<script type="text/javascript" src="js/svgxuse.js"></script>
+</body>
+</html>
