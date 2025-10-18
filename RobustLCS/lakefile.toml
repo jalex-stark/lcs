@@ -1,0 +1,10 @@
+name = "RobustLCS"
+version = "0.1.0"
+defaultTargets = ["robustlcs"]
+
+[[lean_lib]]
+name = "RobustLCS"
+
+[[lean_exe]]
+name = "robustlcs"
+root = "Main"

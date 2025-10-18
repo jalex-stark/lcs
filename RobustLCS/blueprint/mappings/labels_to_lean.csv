@@ -1,0 +1,4 @@
+paper_label,lean_name,status
+def:state-distance,RobustLCS.Core.StateDistance.state_distance,complete
+thm:state-distance-props,RobustLCS.Core.StateDistance.lemma_4_4_b,partial
+thm:exact-self-test,RobustLCS.Exact.ExactSelfTest.theorem_4_1,partial

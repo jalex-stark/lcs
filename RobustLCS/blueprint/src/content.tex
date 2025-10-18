@@ -1,0 +1,27 @@
+\documentclass{article}
+\usepackage{src/macros/common}
+
+\begin{document}
+
+\section{State-Dependent Distance}
+
+\begin{definition}[State-Dependent Distance]\label{def:state-distance}
+For a density matrix $\rho$ and operators $X,Y$, the state-dependent distance is
+\[\drho{\rho}{X}{Y} = \norm{X - Y}^2_\rho\]
+\lean{RobustLCS.Core.StateDistance.state_distance}
+\end{definition}
+
+\begin{theorem}[Properties of State-Dependent Distance]\label{thm:state-distance-props}
+For a density matrix $\rho$ and operators $X, Y, Z$:
+\begin{enumerate}
+\item Left-multiplication invariance: \lean{RobustLCS.Core.StateDistance.lemma_4_4_b}
+\[\drho{\rho}{UX}{UY} = \drho{\rho}{X}{Y}\]
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Exact Self-Testing]\label{thm:exact-self-test}
+If the solution group $\Gamma$ has a unique irreducible representation with $J \mapsto \omega_d I$, then winning strategies are unique up to isometry.
+\lean{RobustLCS.Exact.ExactSelfTest.theorem_4_1}
+\end{theorem}
+
+\end{document}

@@ -1,0 +1,22 @@
+%% Essential LaTeX Macros for RobustLCS
+
+% Mathematical Notation
+\newcommand{\lean}[1]{\texttt{#1}}
+\newcommand{\leanok}{}
+\newcommand{\uses}[1]{}
+\newcommand{\drho}[3]{D_{{#1}}({#2}\mid\mid{#3})}
+
+% Field and Space Notations
+\newcommand{\b}[1]{\mathbb{#1}}
+\newcommand{\R}{\b{R}}
+\newcommand{\C}{\b{C}}
+\newcommand{\Z}{\b{Z}}
+
+% Quantum Notation
+\newcommand{\ket}[1]{\left|#1\right\rangle}
+\newcommand{\bra}[1]{\left\langle#1\right|}
+\newcommand{\ketbra}[2]{\ket{#1}\!\bra{#2}}
+\newcommand{\proj}[1]{\ketbra{#1}{#1}}
+
+% Complexity Classes
+\newcommand{\complexity}[1]{\mathsf{#1}}

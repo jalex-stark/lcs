@@ -1,0 +1,27 @@
+# Lean 4
+/.lake
+/lake-packages
+/build
+/lake-manifest.json
+
+# Python
+.venv
+.venv-*
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+
+# LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.bbl
+*.blg
+
+# macOS
+.DS_Store
