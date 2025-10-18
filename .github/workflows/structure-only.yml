@@ -1,0 +1,106 @@
+name: Structure-Only Guard
+
+on:
+  pull_request:
+    paths:
+      - '**.lean'
+      - 'lakefile.lean'
+      - 'lean-toolchain'
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - '**.lean'
+
+jobs:
+  guard-structure-only:
+    name: Enforce structure-only policy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for diff
+
+      - name: Check for proof edits in PR
+        if: github.event_name == 'pull_request'
+        run: |
+          set -euo pipefail
+
+          base="${{ github.event.pull_request.base.sha }}"
+          head="${{ github.sha }}"
+
+          echo "Checking diff from $base to $head for proof edits..."
+
+          # Run proof-guard on the diff
+          git diff "$base" "$head" -- '**/*.lean' | ./scripts/proof-guard.sh
+
+      - name: Check for proof edits in push
+        if: github.event_name == 'push'
+        run: |
+          set -euo pipefail
+
+          # For pushes, check the diff of the latest commit
+          echo "Checking latest commit for proof edits..."
+
+          git diff HEAD~ HEAD -- '**/*.lean' | ./scripts/proof-guard.sh
+
+  build-lean:
+    name: Verify Lean build (with sorries)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Lean toolchain
+        run: |
+          set -euo pipefail
+
+          # Get Lean version from lean-toolchain
+          if [ -f lean-toolchain ]; then
+            LEAN_VERSION=$(cat lean-toolchain | tr -d '[:space:]')
+            echo "Installing Lean $LEAN_VERSION"
+          else
+            echo "No lean-toolchain file found"
+            exit 1
+          fi
+
+          # Install elan (Lean version manager)
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      - name: Get cache from Mathlib
+        run: |
+          # Try to get cached mathlib builds (speeds up CI significantly)
+          ~/.elan/bin/lake exe cache get || echo "No cache available, building from scratch"
+
+      - name: Build Lean project
+        run: |
+          set -euo pipefail
+
+          echo "Building Lean project (sorries are allowed)..."
+          ~/.elan/bin/lake build
+
+          echo ""
+          echo "✓ Build succeeded (structure is sound)"
+
+      - name: Count sorries
+        run: |
+          echo ""
+          echo "Summary of incomplete proofs:"
+
+          sorry_count=$(grep -r "sorry" --include="*.lean" RobustLCS/ | wc -l || echo 0)
+          admit_count=$(grep -r "admit" --include="*.lean" RobustLCS/ | wc -l || echo 0)
+
+          echo "  Sorries: $sorry_count"
+          echo "  Admits:  $admit_count"
+          echo ""
+
+          if [ "$sorry_count" -eq 0 ] && [ "$admit_count" -eq 0 ]; then
+            echo "🎉 All proofs complete!"
+          else
+            echo "📝 Proofs remaining to complete"
+          fi
