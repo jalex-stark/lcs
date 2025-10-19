@@ -36,6 +36,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-lake-
 
+      - name: Update dependencies from manifest
+        run: lake update
+
       - name: Get Mathlib cache
         run: lake exe cache get || true
 
