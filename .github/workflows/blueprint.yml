@@ -53,7 +53,7 @@ jobs:
 
       - name: Install LaTeX
         run: |
-          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended texlive-science latexmk
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended texlive-science texlive-xetex latexmk
 
       - name: Build blueprint
         run: |
