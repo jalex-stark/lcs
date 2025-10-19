@@ -1,60 +1,16 @@
-/-!
-# Support Projections for Bipartite Density Matrices
-
-This file establishes the crucial **marginal-to-global support theorem** for mixed quantum states,
-answering the referee's request for a constructive, spectral-theorem-free proof.
-
-## Main definitions
-
-* `tensA PA`: Embeds an A-system operator as `PA ⊗ I` on the bipartite system AB
-* `tensB PB`: Embeds a B-system operator as `I ⊗ PB` on the bipartite system AB
-
-## Main results
-
-* `psd_trace_zero_eq_zero`: If X is Hermitian, PSD, and has zero trace, then X = 0
-  (finite-dimensional proof without spectral decomposition)
-
-* `compress_by_support`: If both `(PA ⊗ I)` and `(I ⊗ PB)` support ρAB from left and right,
-  then `(PA ⊗ PB)` compresses ρAB: `(PA⊗PB) ρAB (PA⊗PB) = ρAB`
-
-* **`support_from_marginals`**: **Main theorem** - If PA supports the marginal ρA and PB supports
-  the marginal ρB, then `(PA⊗PB)` supports the global state ρAB.
-
-  This is proved constructively using:
-  1. Partial trace pushforward (from PartialTrace.lean)
-  2. PSD + trace-zero ⇒ zero lemma
-  3. 2×2 block positivity argument to eliminate off-diagonal blocks
-
-## Implementation notes
-
-The proof of `support_from_marginals` proceeds by:
-1. Showing `Tr(((I-PA)⊗I) ρAB ((I-PA)⊗I)) = 0` via partial trace
-2. Concluding `((I-PA)⊗I) ρAB ((I-PA)⊗I) = 0` by PSD-trace-zero
-3. Using block positivity to eliminate cross terms
-4. Symmetrically for the B subsystem
-
-This avoids spectral decomposition entirely and works for all mixed states.
-
-## References
-
-This addresses the referee's request for an explicit mixed-state support theorem in the revision of
-"Robust self-testing for linear constraint system games" (arXiv:1709.09267v2). Used in Lemma 4.3
-and the general self-testing framework.
-
--/
-
-import Mathlib.Data.Complex.Module
 import Mathlib.LinearAlgebra.Matrix
 import Mathlib.LinearAlgebra.Matrix.Kronecker
 import Mathlib.LinearAlgebra.Trace
-import RobustLCS.Core.Density
-import RobustLCS.Exact.PartialTrace
+import Mathlib.Data.Complex.Module
 import RobustLCS.Tactics.SimpTrace
+import RobustLCS.Exact.PartialTrace
+import RobustLCS.Core.Density
 
 open Matrix Complex RobustLCS.Tactics
 open RobustLCS.Exact.PartialTrace
 
 namespace RobustLCS.Exact.Support
+
 /-- Notation shorthands. -/
 variable {nA nB : Type} [Fintype nA] [DecidableEq nA]
                          [Fintype nB] [DecidableEq nB]

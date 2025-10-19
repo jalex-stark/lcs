@@ -58,7 +58,7 @@ jobs:
       - name: Build blueprint
         run: |
           cd blueprint
-          leanblueprint build
+          leanblueprint all
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

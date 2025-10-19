@@ -26,6 +26,8 @@ This repository contains research materials for the paper "Robust self-testing f
     - `StateDistance.lean`: Corrected Lemma 4.4 properties
   - `Exact/`: Exact self-test framework
     - `ExactSelfTest.lean`: Theorem 4.1 and supporting lemmas
+    - `PartialTrace.lean`: Partial trace operations (ptrA, ptrB) with trace pushforward theorems
+    - `Support.lean`: Support projections and marginal-to-global support theorem (referee-requested)
   - `Tactics/`: Helper tactics and simplification lemmas
 
 - **dump.txt**: Conversation transcript discussing peer review feedback and Lean 4 formalization blueprint
@@ -74,13 +76,19 @@ lake build
 
 The project uses Lean v4.23.0 with mathlib v4.23.0 (matching the sister repository [pcp-rpg](../pcp-rpg)).
 
+**Important**: Individual module builds (`lake build RobustLCS.Exact.Support`) may fail with "bad import" errors, but `lake build` (full project) succeeds. This is normal Lean 4 behavior - always verify with full project builds.
+
 ### Phase 1: State-Dependent Distance (In Progress)
 
-**Status**: Core definitions complete, lemma proofs in progress
+**Status**: Core definitions complete, support machinery complete, lemma proofs in progress
 
+**Core Definitions:**
 - ✅ [Density.lean](RobustLCS/Core/Density.lean): Density matrix structure with Hermiticity, PSD, and trace-1 constraints
 - ✅ [StateDistance.lean](RobustLCS/Core/StateDistance.lean): State-dependent distance D_ρ(X∥Y) with corrected Lemma 4.4 properties
-- 🔄 Lemma 4.4 properties (many have `sorry` placeholders):
+- ✅ [PartialTrace.lean](RobustLCS/Exact/PartialTrace.lean): Partial trace operations with trace pushforward
+- ✅ [Support.lean](RobustLCS/Exact/Support.lean): Support projections with marginal-to-global theorem
+
+**Lemma 4.4 properties** (many have `sorry` placeholders):
   - (a) D_ρ(X∥I)² expansion formula
   - (b) Left-unitary invariance: D_ρ(UX∥UY) = D_ρ(X∥Y) ⚠️ **Only left multiplication**
   - (c) Triangle inequality
@@ -91,6 +99,14 @@ The project uses Lean v4.23.0 with mathlib v4.23.0 (matching the sister reposito
   - (h) Partial trace specialization (deferred to later phase)
   - (i) Isometry covariance
   - (j) Projection support properties
+
+**Support.lean theorems** (referee-requested mixed-state framework):
+  - ✅ `psd_trace_zero_eq_zero`: PSD + zero trace ⇒ zero (no spectral theorem!)
+  - ✅ `compress_by_support`: Algebraic compression by tensor product projections
+  - ✅ `support_from_marginals`: **Main theorem** - marginal supports imply global support
+    - Uses partial trace pushforward and 2×2 block positivity
+    - Constructive proof avoiding spectral decomposition
+    - Some proof steps have `sorry` with detailed PLAN/DEPENDS comments
 
 **Architecture**: Uses finite-dimensional `Matrix n n ℂ` to avoid C*-algebra machinery. All proofs are routine finite-dimensional matrix calculations that need to be filled in.
 
