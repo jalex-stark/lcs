@@ -46,12 +46,10 @@ Much like the fidelity of quantum states, the squared distance $D_\rho(\cdot \| 
 	Let $\mathcal{H} = \mathcal{H}_A\otimes \mathcal{H}_B$ be a Hilbert space. Let $U,U_i$ be unitary operators on $\mathcal{H}$. Let $Z,Z_i$ be arbitrary operators on $\mathcal{H}$. Similarly, let $A_i, B_i$ be unitary operators on $\mathcal{H}_A, \mathcal{H}_B$ respectively. Let $X_i, Y_i$ be arbitrary operators on $\mathcal{H}_A, \mathcal{H}_B$, respectively.
 	Let $\rho$ be a state on $\mathcal{H}_A\otimes \mathcal{H}_B$. Let $V: \mathcal{H}\to \mathcal{H}'$ be an isometry and $U'$ a unitary operator on $\mathcal{H}'$. Then
 	\begin{enumerate}[(a)]
-		\item
-		\label{item:state-dependent-distance-square}
+		\item\label{item:state-dependent-distance-square}
 		\lean{RobustLCS.Density.Drho_sq_formula}
 		$D_\rho(U \| I)^2 =2 - 2\mathrm{Re}\,\mathrm{Tr}_\rho U$. More generally, $D_\rho(Z \| I)^2 = 1 + \mathrm{Tr}_\rho Z^\dagger Z - 2\mathrm{Re}\,\mathrm{Tr}_\rho Z$.
-		\item
-		\label{item:state-dependent-distance-inverse}
+		\item\label{item:state-dependent-distance-inverse}
 		\lean{RobustLCS.Density.Drho_left_unitary}
 		$D_\rho(UX \| UY) = D_\rho(X \| Y)$ for unitary $U$. (Left-unitary invariance)
 		\item\label{item:state-dependent-distance-triangle}
@@ -70,10 +68,10 @@ Much like the fidelity of quantum states, the squared distance $D_\rho(\cdot \| 
 		\item\label{item:state-dependent-distance-jensen}
 		\lean{RobustLCS.Density.Drho_convexity}
 		$D_\rho(\mathbb{E}_i U_i \| I) \leq \mathbb{E}_i D_\rho(U_i \| I)$. (Convexity)
-		\item \label{item:state-dependent-distance-partial-trace}
+		\item\label{item:state-dependent-distance-partial-trace}
 		\lean{RobustLCS.Density.Drho_tensor_I_eq_marginal}
 		$D_\rho(A\otimes I_B \| I_{AB}) = D_{\rho_A}(A \| I_A)$, where $\rho_A = \mathrm{Tr}_B \rho$. (Partial trace)
-		\item \label{item:state-dependent-distance-isometry}
+		\item\label{item:state-dependent-distance-isometry}
 		\lean{RobustLCS.Density.Drho_isometry_covariant}
 		$D_\rho(Z_1 \| Z_2) = D_{V\rho V^\dagger}(VZ_1V^\dagger \| VZ_2V^\dagger)$ for isometry $V$. (Isometry covariance)
 		\item\label{item:state-dependent-distance-projection-is-identity}
